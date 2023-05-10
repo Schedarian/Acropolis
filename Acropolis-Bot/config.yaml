@@ -1,0 +1,12 @@
+bot_token: ""
+bot_id: 
+default_embed_color: # Decimal
+server_id: 
+schematics_channel_id: 
+maps_channel_id: 
+logs_channel_id: 
+member_counter_channel_id: 
+starboard_channel_id: 
+starboard_star_count: 
+warnings_permission_level: "manage_messages" 
+# Permission for warn/unwarn command usage, could be overridden with something like "ban_members"
