@@ -1,14 +1,14 @@
 ---
-:bot_token: MTEwNTQyNDQyNjMzNTQ4MTg1Ng.GaDXKq.NdK-momEsiFirdby76ts_dK1jfVR-94yKL44uE
-:bot_id: 1105424426335481856
-:default_embed_color: 3093151 # Decimal
-:server_id: 814298409821011978
-:register_commands?: false
-:schematics_channel_id: 967443537295712317
-:maps_channel_id: 967443537295712317
-:logs_channel_id: 967443537295712317
-:starboard_channel_id: 967443537295712317
-:starboard_star_count: 1
-:timeout_role_id: 1111625553573847140
+:bot_token: 
+:bot_id: 
+:default_embed_color: # Decimal
+:server_id: 
+:register_commands?: 
+:schematics_channel_id: 
+:maps_channel_id: 
+:logs_channel_id: 
+:starboard_channel_id: 
+:starboard_star_count: 
+:timeout_role_id: 
 :warnings_permission_level: manage_messages
 # Permission for warn/unwarn command usage, could be overridden with something like "ban_members"
