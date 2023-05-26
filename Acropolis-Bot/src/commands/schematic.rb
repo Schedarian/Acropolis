@@ -11,12 +11,12 @@ Command_Schematic = lambda { |vars|
     begin
       base64string = handler.options["base64"]
 
-      if Utils.valid_base64?(base64string) == false
+      if vars[:utils].valid_base64?(base64string) == false
         handler.send_message(content: "Произошла ошибка обработки схемы")
       else
         api_output = `java -jar MindustryAPI.jar schematic #{base64string}`
 
-        if Utils.valid_json?(api_output) == false
+        if vars[:utils].valid_json?(api_output) == false
           handler.send_message(content: "Произошла ошибка обработки схемы")
         else
           json = JSON.parse(api_output)
