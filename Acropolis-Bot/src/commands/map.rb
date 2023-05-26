@@ -16,7 +16,7 @@ Command_Map = lambda { |vars|
       base64map = Base64.strict_encode64(mapfile.read)
       api_output = `java -jar MindustryAPI.jar map #{base64map}`
 
-      if Utils.valid_json?(api_output) == false
+      if vars[:utils].valid_json?(api_output) == false
         handler.send_message(content: "Произошла ошибка обработки карты")
         mapfile.close
         mapfile.unlink
@@ -30,7 +30,7 @@ Command_Map = lambda { |vars|
         channel.send_file(mapfile.open, caption: nil, tts: false, filename: "#{json["name"]}.msav", spoiler: nil)
 
         channel.send_embed("", nil, [imgfile.open], false, nil, nil, nil) { |embed|
-          embed.color = config["default_embed_color"]
+          embed.color = vars[:config][:default_embed_color]
           embed.author = Discordrb::Webhooks::EmbedAuthor.new(icon_url: handler.user.avatar_url, name: handler.user.username)
           embed.title = json["name"]
           embed.description = json["description"] == "unknown" ? "[Описание отсутствует]" : json["description"]
