@@ -8,14 +8,13 @@ import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static schematic.mindustry.api.Vars.regions;
 
-public class ImageRegion extends AtlasRegion
-{
+public class ImageRegion extends AtlasRegion {
 
-    public ImageRegion(Region region, BufferedImage atlasPage)
-    {
+    public ImageRegion(Region region, BufferedImage atlasPage) {
         super(region.page.texture, region.left, region.top, region.width, region.height);
-        this.name = region.name;
-        this.texture = region.page.texture;
+
+        name = region.name;
+        texture = region.page.texture;
 
         var image = new BufferedImage(region.width, region.height, TYPE_INT_ARGB);
         var graphics = image.createGraphics();
