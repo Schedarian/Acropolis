@@ -13,51 +13,41 @@ import mindustry.maps.Map;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static arc.files.Fi.tempFile;
 import static arc.util.io.Streams.emptyBytes;
 import static arc.util.serialization.Base64Coder.decode;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
-import static schematic.mindustry.api.Vars.*;
+import static schematic.mindustry.api.Vars.currentGraphics;
+import static schematic.mindustry.api.Vars.currentImage;
 
-public class ContentHandler
-{
-    public static String getRequirements(Schematic schematic)
-    {
-        var builder = new StringBuilder();
-        schematic
-                .requirements()
-                .each(((item, amount) -> builder.append(item + ": ").append(amount + ", ")));
+public class ContentHandler {
+    public static String getRequirements(Schematic schematic) {
+        StringBuilder builder = new StringBuilder();
+        schematic.requirements().each((item, amount) -> builder.append(item).append(": ").append(amount).append(", "));
         return builder.toString();
     }
 
-    public static Map parseMap(InputStream stream) throws IOException
-    {
+    public static Map parseMap(InputStream stream) throws IOException {
         var temp = tempFile("map");
         temp.writeBytes(stream.readAllBytes());
         return MapIO.createMap(temp, true);
     }
 
-    public static byte[] parseMapImage(Map map) throws IOException
-    {
+    public static byte[] parseMapImage(Map map) throws IOException {
         return parseImage(MapIO.generatePreview(map));
     }
 
-    public static Schematic parseSchematic(InputStream stream) throws IOException
-    {
-        return Schematics.read(stream);
-    }
-
-    public static Schematic parseSchematic(String raw) throws IOException
-    {
+    public static Schematic parseSchematic(String raw) throws IOException {
         var temp = tempFile("schematic");
         temp.writeBytes(decode(raw));
         return Schematics.read(temp);
     }
 
-    public static byte[] parseSchematicImage(Schematic schematic)
-    {
+    public static byte[] parseSchematicImage(Schematic schematic) {
         var image = new BufferedImage(schematic.width * 32 + 64, schematic.height * 32 + 64, TYPE_INT_ARGB);
         var plans = schematic.tiles.map(stile -> new BuildPlan(stile.x + 1, stile.y + 1, stile.rotation, stile.block, stile.config));
 
@@ -68,16 +58,11 @@ public class ContentHandler
 
         for (int x = 0; x < schematic.width + 2; x++)
             for (int y = 0; y < schematic.height + 2; y++)
-                Draw.rect(
-                        "metal-floor",
-                        x * 8f,
-                        y * 8f
-                );
+                Draw.rect("metal-floor", x * 8f, y * 8f);
 
         plans.each(plan -> Drawf.squareShadow(plan.drawx(), plan.drawy(), plan.block.size * 16f, 1f));
 
-        plans.each(plan ->
-        {
+        plans.each(plan -> {
             plan.animScale = 1f;
             plan.worldContext = false;
             plan.block.drawPlanRegion(plan, plans);
@@ -89,39 +74,29 @@ public class ContentHandler
         return parseImage(image);
     }
 
-    private static byte[] parseImage(Pixmap pixmap)
-    {
-        var writer = new PngWriter(pixmap.width * pixmap.height);
-        var stream = new OptimizedByteArrayOutputStream(pixmap.width * pixmap.height);
+    private static byte[] parseImage(BufferedImage image) {
+        var stream = new ByteArrayOutputStream();
 
-        try
-        {
-            writer.setFlipY(false);
-            writer.write(stream, pixmap);
+        try {
+            ImageIO.write(image, "png", stream);
             return stream.toByteArray();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return emptyBytes;
-        }
-        finally
-        {
-            writer.dispose();
         }
     }
 
-    private static byte[] parseImage(BufferedImage image)
-    {
-        var stream = new ByteArrayOutputStream();
+    private static byte[] parseImage(Pixmap pixmap) {
+        var writer = new PngWriter(pixmap.width * pixmap.height);
+        var stream = new OptimizedByteArrayOutputStream(pixmap.width * pixmap.height);
 
-        try
-        {
-            ImageIO.write(image, "png", stream);
+        try {
+            writer.setFlipY(false);
+            writer.write(stream, pixmap);
             return stream.toByteArray();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return emptyBytes;
+        } finally {
+            writer.dispose();
         }
     }
 }

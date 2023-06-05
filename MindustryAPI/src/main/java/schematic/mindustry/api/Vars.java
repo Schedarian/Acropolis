@@ -2,18 +2,12 @@ package schematic.mindustry.api;
 
 import arc.files.Fi;
 import arc.struct.ObjectMap;
-import arc.util.serialization.Json;
-import com.github.artbits.quickio.core.IOEntity;
+import com.google.gson.Gson;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import com.google.gson.*;
 
-public class Vars
-{
-    public static final Json json = new Json();
+public class Vars {
     public static final Gson gson = new Gson();
 
     public static final Fi dataDirectory = Fi.get(".mindustry");
