@@ -17,13 +17,13 @@ class Database
         FileUtils.touch("./database/database.db")
         @database = SQLite3::Database.open("database/database.db")
         @database.execute("CREATE TABLE IF NOT EXISTS warnings(userid TEXT, reason TEXT, by TEXT, timestamp INTEGER)")
-        sleep(3) # Let it think a bit
+        sleep(1) # Let it think a bit
         puts "База данных создана"
       }
     else
       Thread.new {
         @database = SQLite3::Database.open("database/database.db")
-        sleep(3) # Let it think a bit
+        sleep(1) # Let it think a bit
         puts "База данных загружена"
       }
     end
