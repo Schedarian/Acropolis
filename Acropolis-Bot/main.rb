@@ -1,44 +1,35 @@
-require "bundler/setup"
+require "yaml"
 require "discordrb"
+require "bundler/setup"
 
-require_relative "src/config.rb"
-require_relative "src/database.rb"
-require_relative "src/logs.rb"
-require_relative "src/starboard.rb"
-require_relative "src/commands.rb"
-require_relative "src/membercounter.rb"
+# Load all files from the src directory
+Dir["./src/*.rb"].each { |file| require file }
 
-require_relative "src/commands/schematic.rb"
-require_relative "src/commands/map.rb"
-require_relative "src/commands/purge.rb"
-require_relative "src/commands/warn.rb"
-require_relative "src/commands/unwarn.rb"
-require_relative "src/commands/warnings.rb"
+config = YAML.load(File.read("config.yaml"), symbolize_names: true)
+database = Database.new
+logger = MessageLogger.new(config)
+starboard = Starboard.new(config)
 
-require_relative "src/events/message_create.rb"
-require_relative "src/events/message_edit.rb"
-require_relative "src/events/message_delete.rb"
-require_relative "src/events/reaction_add.rb"
-
-bot = Discordrb::Bot.new(token: Config::BOT_TOKEN, intents: :all)
+bot = Discordrb::Bot.new(token: config[:bot_token], intents: :all)
 bot.init_cache
 bot.ready {
   bot.idle
-  # bot.delete_application_command(bot.get_application_commands.first.id)
+}
+
+# To avoid passing a lot of args in functions
+vars = {
+  :bot => bot,
+  :config => config,
+  :utils => Utils,
+  :database => database,
+  :logger => logger,
+  :starboard => starboard,
 }
 
 Thread.new {
-  sleep(5) # Let the bot load a bit
-  CommandHandler.register_commands(bot)
-  CommandHandler.handle_commands(bot)
-  EventHandler.handle_events(bot)
-  Starboard.load_starboard(bot)
-  Membercounter.start_counter(bot)
-  Database.check_db
-  puts "[Bot is ready]"
+  sleep(2) # Load stuff
+  CommandHandler.init_commands(vars)
+  EventHandler.init_events(vars)
 }
 
 bot.run
-
-# What about blocked VC with member count?
-# Bot status is online time in hours
