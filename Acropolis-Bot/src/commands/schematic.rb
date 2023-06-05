@@ -25,26 +25,20 @@ Command_Schematic = lambda { |vars|
           imgfile = Tempfile.new(["image", ".png"], "./")
           imgfile.write(Base64.decode64(json["base64image"]))
 
-          textfile = Tempfile.new(["msch", ".txt"], "./")
-          textfile.puts(base64string)
-
-          channel.send_file(textfile.open)
-
           channel.send_embed("", nil, [imgfile.open], false, nil, nil, nil) { |embed|
             embed.color = vars[:config][:default_embed_color]
             embed.author = Discordrb::Webhooks::EmbedAuthor.new(icon_url: handler.user.avatar_url, name: handler.user.username)
             embed.title = json["name"]
-            embed.description = json["description"].empty? ? "[Описание отсутствует]" : json["description"]
-            embed.add_field(name: "Необходимые ресурсы", value: json["resources"])
-            embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: json["size"])
+            embed.description = json["description"].empty? ? nil : json["description"]
+            embed.add_field(name: "Необходимые ресурсы", value: json["resources"].gsub(/\w+/) { |m| vars[:utils]::Translations[m] || m }, inline: false)
+            embed.add_field(name: "Base64 код", value: "```\n#{base64string}\n```", inline: false)
+            embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: json["size"].gsub("blocks", "блоков"))
             embed.image = Discordrb::Webhooks::EmbedImage.new(url: "attachment://#{File.basename(imgfile.path)}")
           }
 
           handler.send_message(content: "Схема загружена в канал")
           sleep(5) # Make sure image is uploaded
 
-          textfile.close
-          textfile.unlink
           imgfile.close
           imgfile.unlink
         end
