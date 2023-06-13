@@ -27,9 +27,9 @@ vars = {
 }
 
 Thread.new {
-  sleep(2) # Load stuff
-  CommandHandler.init_commands(vars)
+  sleep(1) # Load stuff
   EventHandler.init_events(vars)
+  CommandHandler.init_commands(vars)
 }
 
 bot.run
