@@ -2,7 +2,7 @@ require "down"
 
 Command_Map = lambda { |vars|
   if vars[:config][:register_commands?]
-    vars[:bot].register_application_command(:map, "Загрузить карту в канал для карт", server_id: vars[:config]["server_id"]) { |cmd|
+    vars[:bot].register_application_command(:map, "Загрузить карту в канал для карт", server_id: vars[:config][:server_id]) { |cmd|
       cmd.attachment(:file, "Файл карты", required: true)
     }
   end
