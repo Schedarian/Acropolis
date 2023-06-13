@@ -1,6 +1,6 @@
 Command_Say = lambda { |vars|
   if vars[:config][:register_commands?]
-    vars[:bot].register_application_command(:say, "Сообщение от имени бота, только для модераторов/администраторов", server_id: vars[:config]["server_id"]) { |cmd|
+    vars[:bot].register_application_command(:say, "Сообщение от имени бота, только для модераторов/администраторов", server_id: vars[:config][:server_id]) { |cmd|
       cmd.string(:text, "Текст сообщения", required: true)
     }
   end
