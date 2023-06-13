@@ -14,7 +14,7 @@ Command_Map = lambda { |vars|
       mapfile = Down.download(handler.resolved.attachments[handler.options["file"].to_i].url)
 
       base64map = Base64.strict_encode64(mapfile.read)
-      api_output = `java -jar MindustryAPI.jar map #{base64map}`
+      api_output = `java -Xms512m -Xmx768m -jar MindustryAPI.jar map #{base64map}`
 
       if vars[:utils].valid_json?(api_output) == false
         handler.send_message(content: "Произошла ошибка обработки карты")
@@ -33,7 +33,7 @@ Command_Map = lambda { |vars|
           embed.color = vars[:config][:default_embed_color]
           embed.author = Discordrb::Webhooks::EmbedAuthor.new(icon_url: handler.user.avatar_url, name: handler.user.username)
           embed.title = json["name"]
-          embed.description = json["description"] == "unknown" ? "[Описание отсутствует]" : json["description"]
+          embed.description = json["description"] == "unknown" ? nil : json["description"]
           embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: json["size"])
           embed.image = Discordrb::Webhooks::EmbedImage.new(url: "attachment://#{File.basename(imgfile.path)}")
         }
