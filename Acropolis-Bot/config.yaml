@@ -1,14 +1,15 @@
 ---
-:bot_token: 
-:bot_id: 
-:default_embed_color: # Decimal
-:server_id: 
-:register_commands?: 
-:schematics_channel_id: 
-:maps_channel_id: 
-:logs_channel_id: 
-:starboard_channel_id: 
-:starboard_star_count: 
-:timeout_role_id: 
-:warnings_permission_level: manage_messages
+:bot_token:
+:bot_id:
+:default_embed_color:
+:server_id:
+:register_commands?:
+:schematics_channel_id:
+:maps_channel_id:
+:logs_channel_id:
+:moderator_channel_id:
+:starboard_channel_id:
+:starboard_star_count:
+:timeout_role_id:
+:moderator_commands_allowed: ban_members
 # Permission for warn/unwarn command usage, could be overridden with something like "ban_members"
