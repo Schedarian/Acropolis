@@ -14,6 +14,10 @@ bot = Discordrb::Bot.new(token: config[:bot_token], intents: :all)
 bot.init_cache
 bot.ready {
   bot.idle
+    loop {
+    bot.playing = "Mindustry 2"
+    sleep(3600 * 6)
+  }
 }
 
 # To avoid passing a lot of args in functions
