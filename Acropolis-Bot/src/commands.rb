@@ -3,8 +3,10 @@ Dir["./src/commands/*.rb"].each { |file| require file }
 
 module CommandHandler
   Commands = [
+    Command_Embed,
     Command_Map,
     Command_Purge,
+    Command_Say,
     Command_Schematic,
     Command_Warn,
     Command_Warnings,
