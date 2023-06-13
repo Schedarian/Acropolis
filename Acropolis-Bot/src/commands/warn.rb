@@ -7,7 +7,7 @@ Command_Warn = lambda { |vars|
   end
 
   vars[:bot].application_command(:warn) { |handler|
-    if vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:warnings_permission_level].to_sym) == false
+    if vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:moderator_commands_allowed].to_sym) == false
       handler.defer(ephemeral: true)
       handler.send_message(content: "У вас нет прав на использование данной команды")
     else
@@ -19,6 +19,17 @@ Command_Warn = lambda { |vars|
 
         warncount = vars[:database].add_warning(handler.options["user"].to_s, handler.options["reason"], handler.user.id.to_s, Time.now.to_i)
         warncount += 1
+
+        if warncount > 2
+          moderator_channel = vars[:bot].channel(vars[:config][:moderator_channel_id], vars[:config][:server_id])
+          moderator_channel.send_message("У пользователя <@#{handler.options["user"]}> уже **#{warncount}** предупреждени#{warncount == 5 ? "й" : "я"}!")
+          begin
+            vars[:bot].member(vars[:config][:server_id], handler.options["user"].to_i).timeout = Time.now + 86400
+            moderator_channel.send_message("Автоматически выдан тайм-аут на 1 день")
+          rescue Discordrb::Errors::NoPermission
+            moderator_channel.send_message("У бота нет прав на выдачу тайм-аута, выдано только предупреждение")
+          end
+        end
 
         if warncount > 5
           handler.send_message(content: "**У пользователя максимальное количество предупреждений**")
