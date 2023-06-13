@@ -1,6 +1,6 @@
 Command_Embed = lambda { |vars|
   if vars[:config][:register_commands?]
-    vars[:bot].register_application_command(:embed, "Создать вложение, только для модераторов/администраторов", server_id: vars[:config]["server_id"]) { |cmd|
+    vars[:bot].register_application_command(:embed, "Создать вложение, только для модераторов/администраторов", server_id: vars[:config][:server_id]) { |cmd|
       cmd.string(:json, "Вложение в формате JSON, без указания цвета рамки вложения он будет стандартным", required: true)
     }
   end
