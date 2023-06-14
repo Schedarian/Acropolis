@@ -14,7 +14,7 @@ Command_Map = lambda { |vars|
       mapfile = Down.download(handler.resolved.attachments[handler.options["file"].to_i].url)
 
       base64map = Base64.strict_encode64(mapfile.read)
-      api_output = `java -Xms512m -Xmx768m -jar MindustryAPI.jar map #{base64map}`
+      api_output = `java -Xms512M -Xmx1024M -jar MindustryAPI.jar map #{base64map}`
 
       if vars[:utils].valid_json?(api_output) == false
         handler.send_message(content: "Произошла ошибка обработки карты")
