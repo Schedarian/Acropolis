@@ -8,7 +8,6 @@ Dir["./src/*.rb"].each { |file| require file }
 config = YAML.load(File.read("config.yaml"), symbolize_names: true)
 database = Database.new
 logger = MessageLogger.new(config)
-starboard = Starboard.new(config)
 
 bot = Discordrb::Bot.new(token: config[:bot_token], intents: :all)
 bot.init_cache
@@ -27,7 +26,6 @@ vars = {
   :utils => Utils,
   :database => database,
   :logger => logger,
-  :starboard => starboard,
 }
 
 Thread.new {
