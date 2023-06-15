@@ -5,7 +5,6 @@ module EventHandler
     Event_MessageCreate,
     Event_MessageEdit,
     Event_MessageDelete,
-    Event_ReactionAdd,
     Event_MemberUpdate,
     Event_MemberTyping,
   ]
