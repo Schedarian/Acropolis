@@ -14,7 +14,8 @@ public class Server extends NanoHTTPD {
         super(port);
     }
 
-    private static String processSchematic(String argument) throws IOException {
+    private static String processSchematic(String base64Data) throws IOException {
+        var argument = new String(Base64.getDecoder().decode(base64Data));
         var temp = ContentHandler.parseSchematic(argument);
         var requirements = ContentHandler.getRequirements(temp);
         var schematic = new MindustrySchematic(
@@ -28,8 +29,9 @@ public class Server extends NanoHTTPD {
         return gson.toJson(schematic);
     }
 
-    private static String processMap(String argument) throws IOException {
-        var temp = ContentHandler.parseMap(new ByteArrayInputStream(Base64.getDecoder().decode(argument)));
+    private static String processMap(String base64Data) throws IOException {
+        var argument = new String(Base64.getDecoder().decode(base64Data));
+        var temp = ContentHandler.parseMap(new ByteArrayInputStream(argument.getBytes()));
         var map = new MindustryMap(
                 temp.name(),
                 temp.description(),
@@ -58,15 +60,18 @@ public class Server extends NanoHTTPD {
                 String result;
 
                 switch (type) {
-                    case "schematic" -> result = processSchematic(data);
-                    case "map" -> result = processMap(data);
-                    default -> {
+                    case "schematic":
+                        result = processSchematic(data);
+                        break;
+                    case "map":
+                        result = processMap(data);
+                        break;
+                    default:
                         return newFixedLengthResponse(
                                 Response.Status.INTERNAL_ERROR,
                                 NanoHTTPD.MIME_PLAINTEXT,
                                 "Invalid type."
                         );
-                    }
                 }
 
                 return newFixedLengthResponse(
@@ -79,7 +84,7 @@ public class Server extends NanoHTTPD {
                 return newFixedLengthResponse(
                         Response.Status.INTERNAL_ERROR,
                         NanoHTTPD.MIME_PLAINTEXT,
-                        "An exception was occurred: " + exception.getMessage()
+                        "An exception occurred: " + exception.getMessage()
                 );
             }
         } else {
