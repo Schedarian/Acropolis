@@ -1,10 +1,9 @@
 package schematic.mindustry.api;
 
-import schematic.mindustry.api.mindustry.ContentHandler;
+import arc.util.Log;
 import schematic.mindustry.api.util.ResourceUtils;
 
-import java.io.ByteArrayInputStream;
-import java.util.Base64;
+import java.io.IOException;
 
 import static schematic.mindustry.api.Vars.*;
 
@@ -20,50 +19,22 @@ public class Main {
 
         ResourceUtils.init();
 
-        if (args.length < 2) {
-            System.out.println("Invalid arguments");
-            return;
-        }
+        int port = Integer.parseInt(System.getenv("ACROPOLIS_PORT"));
+        Server server = new Server(port);
 
-        String command = args[0];
-        String argument = args[1];
-
-        switch (command) {
-            case "schematic" -> processSchematic(argument);
-            case "map" -> processMap(argument);
-            default -> System.out.println("Invalid arguments");
-        }
-    }
-
-    private static void processSchematic(String argument) {
         try {
-            var temp = ContentHandler.parseSchematic(argument);
-            var requirements = ContentHandler.getRequirements(temp);
-            var schematic = new MindustrySchematic(
-                    temp.name(),
-                    temp.description(),
-                    requirements.substring(0, requirements.length() - 2),
-                    temp.width + "x" + temp.height + ", " + temp.tiles.size + " blocks",
-                    Base64.getEncoder().withoutPadding().encodeToString(ContentHandler.parseSchematicImage(temp))
-            );
-            System.out.println(gson.toJson(schematic));
-        } catch (Exception e) {
-            System.out.println("Schematic parsing error: " + e.getMessage());
-        }
-    }
+            server.start();
+            Log.info("Server started on port @", port);
 
-    private static void processMap(String argument) {
-        try {
-            var temp = ContentHandler.parseMap(new ByteArrayInputStream(Base64.getDecoder().decode(argument)));
-            var map = new MindustryMap(
-                    temp.name(),
-                    temp.description(),
-                    temp.width + "x" + temp.height,
-                    Base64.getEncoder().withoutPadding().encodeToString(ContentHandler.parseMapImage(temp))
-            );
-            System.out.println(gson.toJson(map));
-        } catch (Exception e) {
-            System.out.println("Map parsing error: " + e.getMessage());
+            while (true) {
+                Thread.sleep(1000);
+            }
+        } catch (IOException exception) {
+            Log.err("Failed to start the server: @", exception);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            server.stop();
         }
     }
 }
