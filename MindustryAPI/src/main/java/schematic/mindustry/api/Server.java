@@ -74,19 +74,12 @@ public class Server extends NanoHTTPD {
                         NanoHTTPD.MIME_PLAINTEXT,
                         result
                 );
-            } catch (IllegalArgumentException exception) {
+            } catch (Exception exception) {
                 exception.printStackTrace();
                 return newFixedLengthResponse(
                         Response.Status.INTERNAL_ERROR,
                         NanoHTTPD.MIME_PLAINTEXT,
-                        "Illegal character in Base64 encoded data: " + exception
-                );
-            } catch (IOException exception) {
-                exception.printStackTrace();
-                return newFixedLengthResponse(
-                        Response.Status.INTERNAL_ERROR,
-                        NanoHTTPD.MIME_PLAINTEXT,
-                        "Error occurred while processing the string."
+                        "An exception was occurred: " + exception.getMessage()
                 );
             }
         } else {
