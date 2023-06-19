@@ -6,7 +6,7 @@ Command_Unwarn = lambda { |vars|
   end
 
   vars[:bot].application_command(:unwarn) { |handler|
-    if vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:warnings_permission_level].to_sym) == false
+    if vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:moderator_commands_allowed].to_sym) == false
       handler.defer(ephemeral: true)
       handler.send_message(content: "У вас нет прав на использование данной команды")
     else
