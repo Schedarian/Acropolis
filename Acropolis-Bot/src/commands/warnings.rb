@@ -25,7 +25,7 @@ Command_Warnings = lambda { |vars|
         handler.send_message(embeds: [embed])
       end
     else
-      if (vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:warnings_permission_level].to_sym) == false)
+      if (vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:moderator_commands_allowed].to_sym) == false)
         handler.defer(ephemeral: true)
         handler.send_message(content: "У вас нет прав на использование данной команды")
       else
