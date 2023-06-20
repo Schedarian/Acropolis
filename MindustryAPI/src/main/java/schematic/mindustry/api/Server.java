@@ -34,8 +34,7 @@ public class Server extends NanoHTTPD {
     }
 
     private static String processMap(String base64Data) throws IOException {
-        var argument = new String(Base64.getDecoder().decode(base64Data));
-        var temp = ContentHandler.parseMap(new ByteArrayInputStream(argument.getBytes()));
+        var temp = ContentHandler.parseMap(new ByteArrayInputStream(Base64.getDecoder().decode(base64Data)));
         var map = new MindustryMap(
                 temp.name(),
                 temp.description(),
