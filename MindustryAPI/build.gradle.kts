@@ -13,8 +13,8 @@ repositories {
 dependencies {
     implementation("org.nanohttpd:nanohttpd:2.3.1")
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.github.Anuken.Arc:arc-core:v144.3")
-    implementation("com.github.Anuken.MindustryJitpack:core:v144.3")
+    implementation("com.github.Anuken.Arc:arc-core:v145")
+    implementation("com.github.Anuken.MindustryJitpack:core:v145")
 }
 
 tasks.withType<JavaCompile> {

@@ -1,5 +1,6 @@
 package schematic.mindustry.api;
 
+import com.google.gson.JsonObject;
 import fi.iki.elonen.NanoHTTPD;
 import schematic.mindustry.api.mindustry.ContentHandler;
 import schematic.mindustry.api.mindustry.MindustryMap;
@@ -8,6 +9,8 @@ import schematic.mindustry.api.mindustry.MindustrySchematic;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import static schematic.mindustry.api.Vars.gson;
 
@@ -16,9 +19,8 @@ public class Server extends NanoHTTPD {
         super(port);
     }
 
-    private static String processSchematic(String base64Data) throws IOException {
-        var argument = new String(Base64.getDecoder().decode(base64Data));
-        var temp = ContentHandler.parseSchematic(argument);
+    private static String processSchematic(String base64Data) {
+        var temp = ContentHandler.parseSchematic(base64Data);
         var requirements = ContentHandler.getRequirements(temp);
         var schematic = new MindustrySchematic(
                 temp.name(),
@@ -46,34 +48,29 @@ public class Server extends NanoHTTPD {
 
     @Override
     public Response serve(IHTTPSession session) {
-        if (session.getMethod() == Method.GET) {
+        if (session.getMethod() == Method.POST) {
             try {
-                String data = session.getParameters().get("data").get(0);
-                String type = session.getParameters().get("type").get(0);
+                Map<String, String> jsonMap = new HashMap<>();
+                session.parseBody(jsonMap);
 
-                if (data == null || type == null) {
-                    return newFixedLengthResponse(
-                            Response.Status.BAD_REQUEST,
-                            NanoHTTPD.MIME_PLAINTEXT,
-                            "Type or data not transferred."
-                    );
-                }
+                String json = jsonMap.get("postData");
+                JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+
+                String type = jsonObject.get("type").getAsString();
+                String data = jsonObject.get("data").getAsString();
 
                 String result;
 
                 switch (type) {
-                    case "schematic":
-                        result = processSchematic(data);
-                        break;
-                    case "map":
-                        result = processMap(data);
-                        break;
-                    default:
+                    case "schematic" -> result = processSchematic(data);
+                    case "map" -> result = processMap(data);
+                    default -> {
                         return newFixedLengthResponse(
                                 Response.Status.BAD_REQUEST,
                                 NanoHTTPD.MIME_PLAINTEXT,
                                 "Invalid type."
                         );
+                    }
                 }
 
                 return newFixedLengthResponse(
@@ -81,17 +78,22 @@ public class Server extends NanoHTTPD {
                         NanoHTTPD.MIME_PLAINTEXT,
                         result
                 );
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (NullPointerException exception) {
                 return newFixedLengthResponse(
                         Response.Status.BAD_REQUEST,
+                        NanoHTTPD.MIME_PLAINTEXT,
+                        "Type or data not transferred."
+                );
+            } catch (Exception exception) {
+                return newFixedLengthResponse(
+                        Response.Status.INTERNAL_ERROR,
                         NanoHTTPD.MIME_PLAINTEXT,
                         "An exception occurred: " + exception.getMessage()
                 );
             }
         } else {
             return newFixedLengthResponse(
-                    Response.Status.BAD_REQUEST,
+                    Response.Status.METHOD_NOT_ALLOWED,
                     NanoHTTPD.MIME_PLAINTEXT,
                     "Unsupported method."
             );
