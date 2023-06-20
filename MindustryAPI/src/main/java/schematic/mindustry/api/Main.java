@@ -19,7 +19,14 @@ public class Main {
 
         ResourceUtils.init();
 
-        int port = Integer.parseInt(System.getenv("ACROPOLIS_PORT"));
+        int port;
+        String envPort = System.getenv("ACROPOLIS_PORT");
+
+        if (envPort == null || envPort.isEmpty()) {
+            if (args.length > 0) port = Integer.parseInt(args[0]);
+            else throw new IllegalStateException("ACROPOLIS_PORT environment variable or command line argument not found.");
+        } else port = Integer.parseInt(envPort);
+
         Server server = new Server(port);
 
         try {
