@@ -2,6 +2,8 @@ package schematic.mindustry.api;
 
 import fi.iki.elonen.NanoHTTPD;
 import schematic.mindustry.api.mindustry.ContentHandler;
+import schematic.mindustry.api.mindustry.MindustryMap;
+import schematic.mindustry.api.mindustry.MindustrySchematic;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -51,7 +53,7 @@ public class Server extends NanoHTTPD {
 
                 if (data == null || type == null) {
                     return newFixedLengthResponse(
-                            Response.Status.INTERNAL_ERROR,
+                            Response.Status.BAD_REQUEST,
                             NanoHTTPD.MIME_PLAINTEXT,
                             "Type or data not transferred."
                     );
@@ -68,7 +70,7 @@ public class Server extends NanoHTTPD {
                         break;
                     default:
                         return newFixedLengthResponse(
-                                Response.Status.INTERNAL_ERROR,
+                                Response.Status.BAD_REQUEST,
                                 NanoHTTPD.MIME_PLAINTEXT,
                                 "Invalid type."
                         );
@@ -82,14 +84,14 @@ public class Server extends NanoHTTPD {
             } catch (Exception exception) {
                 exception.printStackTrace();
                 return newFixedLengthResponse(
-                        Response.Status.INTERNAL_ERROR,
+                        Response.Status.BAD_REQUEST,
                         NanoHTTPD.MIME_PLAINTEXT,
                         "An exception occurred: " + exception.getMessage()
                 );
             }
         } else {
             return newFixedLengthResponse(
-                    Response.Status.METHOD_NOT_ALLOWED,
+                    Response.Status.BAD_REQUEST,
                     NanoHTTPD.MIME_PLAINTEXT,
                     "Unsupported method."
             );
