@@ -11,5 +11,6 @@
 :starboard_channel_id:
 :starboard_star_count:
 :timeout_role_id:
+:api_port:
 :moderator_commands_allowed: ban_members
-# Permission for warn/unwarn command usage, could be overridden with something like "ban_members"
+# Permission for warn/unwarn command usage, could be overridden with something other than "ban_members"
