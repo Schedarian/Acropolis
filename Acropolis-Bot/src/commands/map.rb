@@ -2,7 +2,7 @@ require "down"
 
 Command_Map = lambda { |vars|
   if vars[:config][:register_commands?]
-    vars[:bot].register_application_command(:map, "Загрузить карту в канал для карт", server_id: vars[:config][:server_id]) { |cmd|
+    vars[:bot].register_application_command(:map, "Загрузить карту в канал для карт", server_id: vars[:config]["server_id"]) { |cmd|
       cmd.attachment(:file, "Файл карты", required: true)
     }
   end
@@ -13,8 +13,8 @@ Command_Map = lambda { |vars|
     begin
       mapfile = Down.download(handler.resolved.attachments[handler.options["file"].to_i].url)
 
-      base64map = Base64.strict_encode64(mapfile.read)
-      api_output = `java -Xms512M -Xmx1024M -jar MindustryAPI.jar map #{base64map}`
+      base64string = Base64.strict_encode64(mapfile.read)
+      api_output = vars[:parser].send_request("map", base64string)
 
       if vars[:utils].valid_json?(api_output) == false
         handler.send_message(content: "Произошла ошибка обработки карты")
