@@ -19,7 +19,6 @@ import java.io.InputStream;
 
 import static arc.files.Fi.tempFile;
 import static arc.util.io.Streams.emptyBytes;
-import static arc.util.serialization.Base64Coder.decode;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static schematic.mindustry.api.Vars.currentGraphics;
 import static schematic.mindustry.api.Vars.currentImage;
@@ -41,10 +40,8 @@ public class ContentHandler {
         return parseImage(MapIO.generatePreview(map));
     }
 
-    public static Schematic parseSchematic(String raw) throws IOException {
-        var temp = tempFile("schematic");
-        temp.writeBytes(decode(raw));
-        return Schematics.read(temp);
+    public static Schematic parseSchematic(String raw) {
+        return Schematics.readBase64(raw);
     }
 
     public static byte[] parseSchematicImage(Schematic schematic) {

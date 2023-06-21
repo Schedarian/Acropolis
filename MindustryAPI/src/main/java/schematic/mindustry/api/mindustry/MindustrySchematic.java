@@ -1,4 +1,4 @@
-package schematic.mindustry.api;
+package schematic.mindustry.api.mindustry;
 
 public class MindustrySchematic {
     String name;
