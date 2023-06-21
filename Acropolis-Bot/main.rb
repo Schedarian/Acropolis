@@ -8,12 +8,13 @@ Dir["./src/*.rb"].each { |file| require file }
 config = YAML.load(File.read("config.yaml"), symbolize_names: true)
 database = Database.new
 logger = MessageLogger.new(config)
+parser = Parser.new(config[:api_port])
 
 bot = Discordrb::Bot.new(token: config[:bot_token], intents: :all)
 bot.init_cache
 bot.ready {
   bot.idle
-    loop {
+  loop {
     bot.playing = "Mindustry 2"
     sleep(3600 * 6)
   }
@@ -26,6 +27,7 @@ vars = {
   :utils => Utils,
   :database => database,
   :logger => logger,
+  :parser => parser,
 }
 
 Thread.new {
