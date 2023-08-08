@@ -6,7 +6,8 @@ module EventHandler
     Event_MessageEdit,
     Event_MessageDelete,
     Event_MemberUpdate,
-    Event_MemberTyping,
+    Event_Mention,
+    Event_ReactionAdd,
   ]
 
   def self.init_events(vars)
