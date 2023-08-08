@@ -1,6 +1,6 @@
 Command_Purge = lambda { |vars|
   if vars[:config][:register_commands?]
-    vars[:bot].register_application_command(:purge, "Удалить сообщения (от 2 до 100 штук)", server_id: vars[:config][:server_id]) { |cmd|
+    vars[:bot].register_application_command(:purge, "Удалить сообщения (от 2 до 100 штук). Только для модераторов", server_id: vars[:config][:server_id]) { |cmd|
       cmd.integer(:count, "Количество сообщений", required: true)
     }
   end
