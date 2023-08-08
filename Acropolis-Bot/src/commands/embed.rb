@@ -1,6 +1,6 @@
 Command_Embed = lambda { |vars|
   if vars[:config][:register_commands?]
-    vars[:bot].register_application_command(:embed, "Создать вложение, только для модераторов/администраторов", server_id: vars[:config][:server_id]) { |cmd|
+    vars[:bot].register_application_command(:embed, "Создать вложение из JSON строки. Только для администраторов", server_id: vars[:config][:server_id]) { |cmd|
       cmd.string(:json, "Вложение в формате JSON, без указания цвета рамки вложения он будет стандартным", required: true)
     }
   end
@@ -8,7 +8,7 @@ Command_Embed = lambda { |vars|
   vars[:bot].application_command(:embed) { |handler|
     handler.defer(ephemeral: true)
 
-    if vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:moderator_commands_allowed].to_sym) == false
+    if vars[:bot].member(handler.server_id, handler.user.id).permission?(:administrator) == false
       handler.send_message(content: "У вас нет прав на использование данной команды")
     else
       begin
