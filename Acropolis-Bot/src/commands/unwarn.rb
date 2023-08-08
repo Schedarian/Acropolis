@@ -1,12 +1,12 @@
 Command_Unwarn = lambda { |vars|
   if vars[:config][:register_commands?]
-    vars[:bot].register_application_command(:unwarn, "Убрать предупреждение пользователю", server_id: vars[:config][:server_id]) { |cmd|
+    vars[:bot].register_application_command(:unwarn, "Убрать предупреждение. Только для модераторов", server_id: vars[:config][:server_id]) { |cmd|
       cmd.user(:user, "Выберите пользователя", required: true)
     }
   end
 
   vars[:bot].application_command(:unwarn) { |handler|
-    if vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:moderator_commands_allowed].to_sym) == false
+    if vars[:bot].member(handler.server_id, handler.user.id).permission?(:ban_members) == false
       handler.defer(ephemeral: true)
       handler.send_message(content: "У вас нет прав на использование данной команды")
     else
