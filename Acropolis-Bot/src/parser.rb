@@ -10,6 +10,7 @@ end
 class Parser
   def initialize(port)
     @port = port
+    puts "Парсер запущен. Порт: #{@port}"
   end
 
   def send_request(type, base64string)
