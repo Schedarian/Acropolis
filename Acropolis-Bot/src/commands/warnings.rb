@@ -18,14 +18,20 @@ Command_Warnings = lambda { |vars|
       else
         embed.description = "**Ваши предупреждения**"
 
+        day = lambda { |days|
+          return "#{days} день" if days == 1 or days == 21
+          return "#{days} дня" if days.between?(2, 4) or days.between?(22, 24)
+          return "#{days} дней"
+        }
+
         warnings[1].each_with_index { |warn, i|
-          embed.add_field(name: "№#{i + 1}", value: "Причина: #{warn[0]}\nВыдан: <@#{warn[1]}>\nДата: <t:#{warn[2]}>\n[Истекает через #{((Time.at(warn[2].to_i + 2592000) - Time.now) / 86400).ceil} дней]", inline: true)
+          embed.add_field(name: "##{i + 1}", value: "Причина: #{warn[0]}\nВыдан: <@#{warn[1]}>\nДата: <t:#{warn[2]}>\n[Истекает через #{day.call(((Time.at(warn[2].to_i + 2592000) - Time.now) / 86400).ceil)}]", inline: true)
         }
 
         handler.send_message(embeds: [embed])
       end
     else
-      if (vars[:bot].member(handler.server_id, handler.user.id).permission?(vars[:config][:moderator_commands_allowed].to_sym) == false)
+      if (vars[:bot].member(handler.server_id, handler.user.id).permission?(:ban_members) == false)
         handler.defer(ephemeral: true)
         handler.send_message(content: "У вас нет прав на использование данной команды")
       else
@@ -41,7 +47,7 @@ Command_Warnings = lambda { |vars|
           embed.description = "**Предупреждения пользователя** <@#{handler.options["user"]}>"
 
           warnings[1].each_with_index { |warn, i|
-            embed.add_field(name: "№#{i + 1}", value: "Причина: #{warn[0]}\nВыдан: <@#{warn[1]}>\nДата: <t:#{warn[2]}>\n[Истекает через #{((Time.at(warn[2].to_i + 2592000) - Time.now) / 86400).ceil} дней]", inline: true)
+            embed.add_field(name: "##{i + 1}", value: "Причина: #{warn[0]}\nВыдан: <@#{warn[1]}>\nДата: <t:#{warn[2]}>\n[Истекает через #{((Time.at(warn[2].to_i + 2592000) - Time.now) / 86400).ceil} дней]", inline: true)
           }
         end
 
