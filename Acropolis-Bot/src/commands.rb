@@ -8,6 +8,7 @@ module CommandHandler
     Command_Purge,
     Command_Say,
     Command_Schematic,
+    Command_Media,
     Command_Warn,
     Command_Warnings,
     Command_Unwarn,
